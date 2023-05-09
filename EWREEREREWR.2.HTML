@@ -1,0 +1,78 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Онлайн-калькулятор криптовалюты</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Онлайн-калькулятор криптовалюты</h1>
+        <p>Введите сумму в рублях и выберите криптовалюту для конвертации:</p>
+        <div class="form-group">
+            <label for="amount">Сумма в рублях:</label>
+            <input type="number" id="amount" min="1" step="any">
+        </div>
+        <div class="form-group">
+            <label for="currency">Криптовалюта:</label>
+            <select id="currency">
+                <option value="BTC">Bitcoin</option>
+                <option value="ETH">Ethereum</option>
+                <option value="LTC">Litecoin</option>
+            </select>
+        </div>
+        <button onclick="convert()">Конвертировать</button>
+        <div class="result"></div>
+    </div>
+
+    <script>
+        async function convert() {
+            // Получение значений из полей ввода
+            const amount = document.querySelector('#amount').value;
+            const currency = document.querySelector('#currency').value;
+
+            // Проверка корректности введенной суммы
+            if (amount === '' || amount <= 0) {
+                alert('Пожалуйста, введите корректную сумму');
+                return;
+            }
+
+            // Получение курса выбранной криптовалюты
+            const response = await fetch(`https://min-api.cryptocompare.com/data/price?fsym=${currency}&tsyms=RUB`);
+            const data = await response.json();
+            const rate = data.RUB;
+
+            // Вычисление результата и отображение его на странице
+            const result = amount / rate;
+            document.querySelector('.result').textContent = `${amount} RUB = ${result.toFixed(6)} ${currency}`;
+        }
+    </script>
+</body>
+</html>
